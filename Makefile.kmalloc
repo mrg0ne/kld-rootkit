@@ -1,0 +1,14 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=kmalloc
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+FILESDIR=.
+KMOD=kmalloc
+SRCS=kmalloc.c
+
+.include <bsd.kmod.mk>

