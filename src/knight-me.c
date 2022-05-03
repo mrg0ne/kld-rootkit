@@ -15,7 +15,7 @@ int main (int argc, char** argv) {
    int syscall_num = atoi(argv[1]);
 
    if (syscall(syscall_num, argv[2]) != 0) {
-      perror("[x] knighted syscall %d failed. Is module loaded?");
+      printf("[x] knighted syscall %d failed. Is module loaded?\n", syscall_num);
       return -1;
    }
 
