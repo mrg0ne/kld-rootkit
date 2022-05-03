@@ -151,6 +151,12 @@ if [ $? -ne 0 ];then
    exit -1
 fi
 
+cc -o ./bin/interface-deepbg ./src/interface-deepbg.c
+if [ $? -ne 0 ];then
+   echo "[x] Make interface-deepbg failed"
+   exit -1
+fi
+
 cc -o ./bin/interface-whisper ./src/interface-whisper.c
 if [ $? -ne 0 ];then
    echo "[x] Make interface-whisper failed"

