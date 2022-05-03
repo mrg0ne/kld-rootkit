@@ -35,6 +35,7 @@ rootkit:
 | ------- | ----------- |
 | interface-lookup | Look up syscall numbers associated with the rootkit's capabilities. |
 | knight-me | Uses the knighted system call to drop the user into a rootshell. |
+| interface-deepbg | Uses the deepbg system call to hide a running process and it's direct children. |
 | interface-whisper | Uses the whisper system call to hide an open TCP connection. |
 | loader | Works in conjunction with stash and file_redirection to replace a file with a trojan without altering the file's access and modification times. |
 | trigger | Used with the order_66 backdoor and a listener like netcat (nc) to make a reverse shell connection. |
@@ -54,24 +55,42 @@ If kernel sources are in a non-standard location (i.e. other than /usr/src/sys)
 set the SYSDIR environment variable to the location of the "sys" directory in
 your kernel source tree.
 
-Run the "install_rootkit.sh" script as root.
+Run the "install_rootkit.sh" script located in the top level directory of this repo as root.
 
 Use the "-s" option to install in stealth mode which will avoid printing debug
 messages to the system log and will employ the kernel module hiding and
 persistence capabilities.
 
+    ./install_rootkit.sh -s
+
 Running the script without the "-s" option will basically install the rootkit
 in test mode. Debug messages will be written to the console and system log.
 No attempt to hide the kernel modules or achieve persistence will be made.
+
+    ./install_rootkit.sh
 
 An optional argument for the "magic word" can be used as well. This string
 is used as a password to activate some features in this rootkit such as the
 order_66 backdoor and knighted rootshell. This string can also be used as
 part of a file's name to use the file hiding and redirection capabilities.
 
-The default "magic word" is "z4xX0n" and will be used in all examples in this document.
+    ./install_rootkit.sh -s z4xX0n
+
+The default "magic word" is "z4xX0n" and will be used in the rest of the examples in this document.
 
 ## How to Use
+
+As part of the installation, rootkit utilities will be built and can be found under the top level directory of this repo, in the bin subdirectory.
+
+### Lookup Syscall Numbers
+
+Use the interface-lookup utility to get the system call numbers of this rootkit. An optional system call number of the shdw_lookup system call can also be passed as an argument.
+
+    $ ./bin/interface-lookup 210
+    [-] lookup syscall number   = 210
+    [-] deepbg syscall number   = 211
+    [-] knighted syscall number = 213
+    [-] whisper syscall number  = 212
 
 ### Process Hiding
 
@@ -79,7 +98,7 @@ Use the deepbg system call to hide a running process. It takes a PID number as a
 
 To test on a process with PID 1234, run:
 
-    perl -e 'syscall(211, 1234)'
+    ./bin/interface-deepbg 211 1234
 
 ### File Hiding
 
@@ -155,7 +174,11 @@ Persistence through reboot is achieved by creating a copy of the */etc/defaults/
   
 ## Disable the Rootkit
   
-To disable the rootkit, boot into single user mode and run:
+To disable the rootkit after installing in test mode, run the "kldloadall.sh" script located in the top level directory of this repo with the "-u" option.
+
+    ./kldloadall.sh -u
+  
+To disable the rootkit after installing in stealth mode, boot into single user mode and run:
   
     zfs set readonly=false zroot
     zfs mount -a
