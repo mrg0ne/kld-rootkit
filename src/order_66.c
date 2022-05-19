@@ -23,7 +23,6 @@
 #include <sys/lock.h>
 #include <sys/sx.h>
 #include <sys/mutex.h>
-#include <sys/param.h>
 #include <vm/vm.h>
 #include <vm/pmap.h>
 #include <vm/vm_map.h>

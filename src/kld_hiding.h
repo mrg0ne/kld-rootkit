@@ -4,8 +4,8 @@
 #include <sys/types.h>
 #include <sys/queue.h>
 #include <sys/sysproto.h>
+#include <sys/param.h>
 #include <sys/module.h>
-
 #include <sys/linker.h>
 #include <sys/lock.h>
 #include <sys/sx.h>

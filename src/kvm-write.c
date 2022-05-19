@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/module.h>
 #include <kvm.h>
 #include <fcntl.h>

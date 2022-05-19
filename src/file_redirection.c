@@ -8,7 +8,6 @@
 #include <sys/systm.h>
 #include <sys/syscall.h>
 #include <sys/syscallsubr.h>
-#include <sys/sysproto.h>
 #include <sys/malloc.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
