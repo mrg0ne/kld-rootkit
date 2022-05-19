@@ -2,6 +2,7 @@
 #include <sys/param.h>
 #include <sys/sysproto.h>
 #include <sys/malloc.h>
+#include <sys/param.h>
 #include <sys/module.h>
 #include <sys/sysent.h>
 #include <sys/kernel.h>
