@@ -172,7 +172,7 @@ To disable the rootkit after installing in test mode, run the "kldloadall.sh" sc
   
 To disable the rootkit after installing in stealth mode, boot into single user mode and run:
   
-    zfs set readonly=false zroot
+    zfs set readonly=off zroot
     zfs mount -a
     cp -f /etc/defaults/rc.conf.z4xX0n /etc/defaults/rc.conf
     exit
