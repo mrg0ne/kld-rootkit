@@ -28,9 +28,8 @@ kmalloc(struct thread *td, void *syscall_args)
 
 /* The sysent for the new system call. */
 static struct sysent kmalloc_sysent = {
-   kmalloc,
-   NULL,
-   2
+   2,
+   kmalloc
 };
 
 /* The offset in sysent[] where the system call is to be allocated. */
