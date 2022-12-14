@@ -48,8 +48,9 @@ static int knighted (struct thread *td, void *syscall_args) {
 
 /* The sysent for the new system call. */
 static struct sysent knighted_sysent = {
+   knighted, /* implementing function */
+   NULL,
    1,        /* number of arguments */
-   knighted  /* implementing function */
 };
 
 /* The offset in sysent[] where the system call is to be allocated. */
