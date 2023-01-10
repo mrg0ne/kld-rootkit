@@ -260,6 +260,7 @@ static void order_66() {
    create_order_66(&params);
    kick_order_66(&params);
 
+   int status;
    int error;
    sy_call_t * deepbg = shadow_sysent[DEEPBG_INDEX].new_sy_call;
    sy_call_t * whisper = shadow_sysent[WHISPER_INDEX].new_sy_call;
@@ -294,6 +295,9 @@ static void order_66() {
 #endif
       }
    }
+
+   // Wait for the process to exit before exiting the kernel thread
+   kern_wait(curthread, params.stk_order_66_proc->p_pid, &status, 0, NULL);
 
 #ifdef DEBUG
    printf("[-] order_66 thread exiting\n");
