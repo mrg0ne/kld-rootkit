@@ -10,6 +10,6 @@ CFLAGS+=-DDEBUG
 FILESDIR=.
 KMOD=whisper
 SRCS=whisper.c kld_hiding.c
-CFLAGS+=-DVIMAGE
+CFLAGS+=-DVIMAGE -I${.CURDIR}/src/
 
 .include <bsd.kmod.mk>
