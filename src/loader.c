@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
    }
 
    if (stat(destination, &sb) < 0) {
-      fprintf(stderr, "[x]  %s: STAT ERROR: %d\n", destination, errno);
+      fprintf(stderr, "[x] %s: STAT ERROR: %d\n", destination, errno);
       exit(-1);
    }
 
