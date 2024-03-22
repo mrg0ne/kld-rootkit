@@ -1,9 +1,9 @@
 # kld-rootkit
-## A collection of FreeBSD 13.2 rootkit kernel modules and utilities
+## A collection of FreeBSD 13.3 rootkit kernel modules and utilities
 
 **TL;DR ./install_rootkit.sh -s**
 
-This rootkit was developed and tested on FreeBSD 13.2-RELEASE. It is a
+This rootkit was developed and tested on FreeBSD 13.3-RELEASE. It is a
 collection of kernel modules and utilities derived from the examples in
 Joseph Kong's excellent book [DESIGNING BSD ROOTKITS](https://nostarch.com/rootkits.htm), which I highly encourage
 anyone with interest in kernel programming to read.

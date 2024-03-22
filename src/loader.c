@@ -24,121 +24,113 @@ unsigned char	nop_code4[] =
  * Output of "llvm-objdump -dr /boot/kernel/kernel | less"
  * then search for "<ufs_itimes_locked>:"
 
-ffffffff80f38260 <ufs_itimes_locked>:
-ffffffff80f38260: 55                    pushq   %rbp
-ffffffff80f38261: 48 89 e5              movq    %rsp, %rbp
-ffffffff80f38264: 41 56                 pushq   %r14
-ffffffff80f38266: 53                    pushq   %rbx
-ffffffff80f38267: 48 83 ec 10           subq    $16, %rsp
-ffffffff80f3826b: 48 89 fb              movq    %rdi, %rbx
-ffffffff80f3826e: 4c 8b 77 18           movq    24(%rdi), %r14
-ffffffff80f38272: 49 8b 46 18           movq    24(%r14), %rax
-ffffffff80f38276: 4c 89 f7              movq    %r14, %rdi
-ffffffff80f38279: ff 90 d8 01 00 00     callq   *472(%rax)
-ffffffff80f3827f: 85 c0                 testl   %eax, %eax
-ffffffff80f38281: 74 0e                 je      0xffffffff80f38291 <ufs_itimes_locked+0x31>
-ffffffff80f38283: 41 80 66 48 f8        andb    $-8, 72(%r14)
-ffffffff80f38288: 48 83 c4 10           addq    $16, %rsp
-ffffffff80f3828c: 5b                    popq    %rbx
-ffffffff80f3828d: 41 5e                 popq    %r14
-ffffffff80f3828f: 5d                    popq    %rbp
-ffffffff80f38290: c3                    retq
-ffffffff80f38291: 41 8b 46 48           movl    72(%r14), %eax
-ffffffff80f38295: a8 07                 testb   $7, %al
-ffffffff80f38297: 74 ef                 je      0xffffffff80f38288 <ufs_itimes_locked+0x28>
-ffffffff80f38299: 8a 0b                 movb    (%rbx), %cl
-ffffffff80f3829b: 80 c1 fd              addb    $-3, %cl
-ffffffff80f3829e: 48 8b 53 20           movq    32(%rbx), %rdx
-ffffffff80f382a2: 80 f9 01              cmpb    $1, %cl
-ffffffff80f382a5: 77 0b                 ja      0xffffffff80f382b2 <ufs_itimes_locked+0x52>
-ffffffff80f382a7: b9 20 00 00 00        movl    $32, %ecx
-ffffffff80f382ac: f6 42 0a 20           testb   $32, 10(%rdx)
-ffffffff80f382b0: 74 1b                 je      0xffffffff80f382cd <ufs_itimes_locked+0x6d>
-ffffffff80f382b2: f6 42 07 18           testb   $24, 7(%rdx)
-ffffffff80f382b6: b9 08 00 00 00        movl    $8, %ecx
-ffffffff80f382bb: 74 10                 je      0xffffffff80f382cd <ufs_itimes_locked+0x6d>
-ffffffff80f382bd: 89 c2                 movl    %eax, %edx
-ffffffff80f382bf: 83 e2 06              andl    $6, %edx
-ffffffff80f382c2: 75 09                 jne     0xffffffff80f382cd <ufs_itimes_locked+0x6d>
-ffffffff80f382c4: b9 40 00 00 00        movl    $64, %ecx
-ffffffff80f382c9: a8 01                 testb   $1, %al
-ffffffff80f382cb: 74 0f                 je      0xffffffff80f382dc <ufs_itimes_locked+0x7c>
-ffffffff80f382cd: 49 8b 7e 10           movq    16(%r14), %rdi
-ffffffff80f382d1: 09 c8                 orl     %ecx, %eax
-ffffffff80f382d3: 41 89 46 48           movl    %eax, 72(%r14)
-ffffffff80f382d7: e8 c4 f1 db ff        callq   0xffffffff80cf74a0 <vlazy>
-ffffffff80f382dc: 48 8d 7d e0           leaq    -32(%rbp), %rdi
-ffffffff80f382e0: e8 9b c5 db ff        callq   0xffffffff80cf4880 <vfs_timestamp>
-ffffffff80f382e5: 41 8b 4e 48           movl    72(%r14), %ecx
-ffffffff80f382e9: f6 c1 01              testb   $1, %cl
-ffffffff80f382ec: 74 3b                 je      0xffffffff80f38329 <ufs_itimes_locked+0xc9>
-ffffffff80f382ee: 48 8b 45 e0           movq    -32(%rbp), %rax
-ffffffff80f382f2: f7 c1 00 04 00 00     testl   $1024, %ecx             # imm = 0x400
-ffffffff80f382f8: 75 09                 jne     0xffffffff80f38303 <ufs_itimes_locked+0xa3>
-ffffffff80f382fa: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f382fe: 89 41 10              movl    %eax, 16(%rcx)
-ffffffff80f38301: eb 08                 jmp     0xffffffff80f3830b <ufs_itimes_locked+0xab>
-ffffffff80f38303: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38307: 48 89 41 20           movq    %rax, 32(%rcx)
-ffffffff80f3830b: 41 f6 46 49 04        testb   $4, 73(%r14)
-ffffffff80f38310: 8b 45 e8              movl    -24(%rbp), %eax
-ffffffff80f38313: 75 0a                 jne     0xffffffff80f3831f <ufs_itimes_locked+0xbf>
-ffffffff80f38315: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38319: 48 83 c1 14           addq    $20, %rcx
-ffffffff80f3831d: eb 08                 jmp     0xffffffff80f38327 <ufs_itimes_locked+0xc7>
-ffffffff80f3831f: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38323: 48 83 c1 44           addq    $68, %rcx
-ffffffff80f38327: 89 01                 movl    %eax, (%rcx)
-ffffffff80f38329: 41 8b 4e 48           movl    72(%r14), %ecx
-ffffffff80f3832d: f6 c1 04              testb   $4, %cl
-ffffffff80f38330: 74 37                 je      0xffffffff80f38369 <ufs_itimes_locked+0x109>
-ffffffff80f38332: 48 8b 45 e0           movq    -32(%rbp), %rax
-ffffffff80f38336: f7 c1 00 04 00 00     testl   $1024, %ecx             # imm = 0x400
-ffffffff80f3833c: 75 09                 jne     0xffffffff80f38347 <ufs_itimes_locked+0xe7>
-ffffffff80f3833e: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38342: 89 41 18              movl    %eax, 24(%rcx)
-ffffffff80f38345: eb 08                 jmp     0xffffffff80f3834f <ufs_itimes_locked+0xef>
-ffffffff80f38347: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f3834b: 48 89 41 28           movq    %rax, 40(%rcx)
-ffffffff80f3834f: 41 f6 46 49 04        testb   $4, 73(%r14)
-ffffffff80f38354: 8b 45 e8              movl    -24(%rbp), %eax
-ffffffff80f38357: 75 09                 jne     0xffffffff80f38362 <ufs_itimes_locked+0x102>
-ffffffff80f38359: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f3835d: 89 41 1c              movl    %eax, 28(%rcx)
-ffffffff80f38360: eb 07                 jmp     0xffffffff80f38369 <ufs_itimes_locked+0x109>
-ffffffff80f38362: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38366: 89 41 40              movl    %eax, 64(%rcx)
-ffffffff80f38369: 41 8b 4e 48           movl    72(%r14), %ecx
-ffffffff80f3836d: f6 c1 02              testb   $2, %cl
-ffffffff80f38370: 0f 84 0d ff ff ff     je      0xffffffff80f38283 <ufs_itimes_locked+0x23>
-ffffffff80f38376: 48 8b 45 e0           movq    -32(%rbp), %rax
-ffffffff80f3837a: f7 c1 00 04 00 00     testl   $1024, %ecx             # imm = 0x400
-ffffffff80f38380: 75 09                 jne     0xffffffff80f3838b <ufs_itimes_locked+0x12b>
-ffffffff80f38382: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f38386: 89 41 20              movl    %eax, 32(%rcx)
-ffffffff80f38389: eb 08                 jmp     0xffffffff80f38393 <ufs_itimes_locked+0x133>
-ffffffff80f3838b: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f3838f: 48 89 41 30           movq    %rax, 48(%rcx)
-ffffffff80f38393: 41 f6 46 49 04        testb   $4, 73(%r14)
-ffffffff80f38398: 8b 45 e8              movl    -24(%rbp), %eax
-ffffffff80f3839b: 75 19                 jne     0xffffffff80f383b6 <ufs_itimes_locked+0x156>
-ffffffff80f3839d: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f383a1: 89 41 24              movl    %eax, 36(%rcx)
-ffffffff80f383a4: 41 f6 46 49 04        testb   $4, 73(%r14)
-ffffffff80f383a9: 74 19                 je      0xffffffff80f383c4 <ufs_itimes_locked+0x164>
-ffffffff80f383ab: b8 e8 00 00 00        movl    $232, %eax
-ffffffff80f383b0: 49 03 46 38           addq    56(%r14), %rax
-ffffffff80f383b4: eb 16                 jmp     0xffffffff80f383cc <ufs_itimes_locked+0x16c>
-ffffffff80f383b6: 49 8b 4e 38           movq    56(%r14), %rcx
-ffffffff80f383ba: 89 41 48              movl    %eax, 72(%rcx)
-ffffffff80f383bd: 41 f6 46 49 04        testb   $4, 73(%r14)
-ffffffff80f383c2: 75 e7                 jne     0xffffffff80f383ab <ufs_itimes_locked+0x14b>
-ffffffff80f383c4: 49 8b 46 38           movq    56(%r14), %rax
-ffffffff80f383c8: 48 83 c0 78           addq    $120, %rax
-ffffffff80f383cc: 48 83 00 01           addq    $1, (%rax)
-ffffffff80f383d0: e9 ae fe ff ff        jmp     0xffffffff80f38283 <ufs_itimes_locked+0x23>
-ffffffff80f383d5: 66 2e 0f 1f 84 00 00 00 00 00 nopw    %cs:(%rax,%rax)
-ffffffff80f383df: 90                    nop
+ffffffff80f4d8e0 <ufs_itimes_locked>:
+ffffffff80f4d8e0: 55                    pushq   %rbp
+ffffffff80f4d8e1: 48 89 e5              movq    %rsp, %rbp
+ffffffff80f4d8e4: 41 56                 pushq   %r14
+ffffffff80f4d8e6: 53                    pushq   %rbx
+ffffffff80f4d8e7: 48 83 ec 10           subq    $0x10, %rsp
+ffffffff80f4d8eb: 49 89 fe              movq    %rdi, %r14
+ffffffff80f4d8ee: 48 8b 5f 18           movq    0x18(%rdi), %rbx
+ffffffff80f4d8f2: 48 8b 43 18           movq    0x18(%rbx), %rax
+ffffffff80f4d8f6: 48 89 df              movq    %rbx, %rdi
+ffffffff80f4d8f9: ff 90 e0 01 00 00     callq   *0x1e0(%rax)
+ffffffff80f4d8ff: 85 c0                 testl   %eax, %eax
+ffffffff80f4d901: 74 0d                 je      0xffffffff80f4d910 <ufs_itimes_locked+0x30>
+ffffffff80f4d903: 80 63 48 f8           andb    $-0x8, 0x48(%rbx)
+ffffffff80f4d907: 48 83 c4 10           addq    $0x10, %rsp
+ffffffff80f4d90b: 5b                    popq    %rbx
+ffffffff80f4d90c: 41 5e                 popq    %r14
+ffffffff80f4d90e: 5d                    popq    %rbp
+ffffffff80f4d90f: c3                    retq
+ffffffff80f4d910: 8b 43 48              movl    0x48(%rbx), %eax
+ffffffff80f4d913: a8 07                 testb   $0x7, %al
+ffffffff80f4d915: 74 f0                 je      0xffffffff80f4d907 <ufs_itimes_locked+0x27>
+ffffffff80f4d917: 41 0f b6 0e           movzbl  (%r14), %ecx
+ffffffff80f4d91b: 80 c1 fd              addb    $-0x3, %cl
+ffffffff80f4d91e: 49 8b 56 20           movq    0x20(%r14), %rdx
+ffffffff80f4d922: 80 f9 01              cmpb    $0x1, %cl
+ffffffff80f4d925: 77 0b                 ja      0xffffffff80f4d932 <ufs_itimes_locked+0x52>
+ffffffff80f4d927: b9 20 00 00 00        movl    $0x20, %ecx
+ffffffff80f4d92c: f6 42 0a 20           testb   $0x20, 0xa(%rdx)
+ffffffff80f4d930: 74 1c                 je      0xffffffff80f4d94e <ufs_itimes_locked+0x6e>
+ffffffff80f4d932: b9 08 00 00 00        movl    $0x8, %ecx
+ffffffff80f4d937: a8 06                 testb   $0x6, %al
+ffffffff80f4d939: 75 13                 jne     0xffffffff80f4d94e <ufs_itimes_locked+0x6e>
+ffffffff80f4d93b: be 00 00 00 18        movl    $0x18000000, %esi       # imm = 0x18000000
+ffffffff80f4d940: 23 72 04              andl    0x4(%rdx), %esi
+ffffffff80f4d943: 74 09                 je      0xffffffff80f4d94e <ufs_itimes_locked+0x6e>
+ffffffff80f4d945: b9 40 00 00 00        movl    $0x40, %ecx
+ffffffff80f4d94a: a8 01                 testb   $0x1, %al
+ffffffff80f4d94c: 74 0e                 je      0xffffffff80f4d95c <ufs_itimes_locked+0x7c>
+ffffffff80f4d94e: 48 8b 7b 10           movq    0x10(%rbx), %rdi
+ffffffff80f4d952: 09 c8                 orl     %ecx, %eax
+ffffffff80f4d954: 89 43 48              movl    %eax, 0x48(%rbx)
+ffffffff80f4d957: e8 34 3f d9 ff        callq   0xffffffff80ce1890 <vlazy>
+ffffffff80f4d95c: 48 8d 7d e0           leaq    -0x20(%rbp), %rdi
+ffffffff80f4d960: e8 1b 12 d9 ff        callq   0xffffffff80cdeb80 <vfs_timestamp>
+ffffffff80f4d965: 8b 4b 48              movl    0x48(%rbx), %ecx
+ffffffff80f4d968: f6 c1 01              testb   $0x1, %cl
+ffffffff80f4d96b: 74 3c                 je      0xffffffff80f4d9a9 <ufs_itimes_locked+0xc9>
+ffffffff80f4d96d: 48 8b 45 e0           movq    -0x20(%rbp), %rax
+ffffffff80f4d971: f7 c1 00 04 00 00     testl   $0x400, %ecx            # imm = 0x400
+ffffffff80f4d977: 75 09                 jne     0xffffffff80f4d982 <ufs_itimes_locked+0xa2>
+ffffffff80f4d979: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d97d: 89 41 10              movl    %eax, 0x10(%rcx)
+ffffffff80f4d980: eb 08                 jmp     0xffffffff80f4d98a <ufs_itimes_locked+0xaa>
+ffffffff80f4d982: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d986: 48 89 41 20           movq    %rax, 0x20(%rcx)
+ffffffff80f4d98a: f7 43 48 00 04 00 00  testl   $0x400, 0x48(%rbx)      # imm = 0x400
+ffffffff80f4d991: 8b 45 e8              movl    -0x18(%rbp), %eax
+ffffffff80f4d994: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d998: ba 14 00 00 00        movl    $0x14, %edx
+ffffffff80f4d99d: be 44 00 00 00        movl    $0x44, %esi
+ffffffff80f4d9a2: 48 0f 44 f2           cmoveq  %rdx, %rsi
+ffffffff80f4d9a6: 89 04 31              movl    %eax, (%rcx,%rsi)
+ffffffff80f4d9a9: 8b 4b 48              movl    0x48(%rbx), %ecx
+ffffffff80f4d9ac: f6 c1 04              testb   $0x4, %cl
+ffffffff80f4d9af: 74 32                 je      0xffffffff80f4d9e3 <ufs_itimes_locked+0x103>
+ffffffff80f4d9b1: 48 8b 45 e0           movq    -0x20(%rbp), %rax
+ffffffff80f4d9b5: f7 c1 00 04 00 00     testl   $0x400, %ecx            # imm = 0x400
+ffffffff80f4d9bb: 75 09                 jne     0xffffffff80f4d9c6 <ufs_itimes_locked+0xe6>
+ffffffff80f4d9bd: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d9c1: 89 41 18              movl    %eax, 0x18(%rcx)
+ffffffff80f4d9c4: eb 08                 jmp     0xffffffff80f4d9ce <ufs_itimes_locked+0xee>
+ffffffff80f4d9c6: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d9ca: 48 89 41 28           movq    %rax, 0x28(%rcx)
+ffffffff80f4d9ce: f6 43 49 04           testb   $0x4, 0x49(%rbx)
+ffffffff80f4d9d2: 8b 45 e8              movl    -0x18(%rbp), %eax
+ffffffff80f4d9d5: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d9d9: 75 05                 jne     0xffffffff80f4d9e0 <ufs_itimes_locked+0x100>
+ffffffff80f4d9db: 89 41 1c              movl    %eax, 0x1c(%rcx)
+ffffffff80f4d9de: eb 03                 jmp     0xffffffff80f4d9e3 <ufs_itimes_locked+0x103>
+ffffffff80f4d9e0: 89 41 40              movl    %eax, 0x40(%rcx)
+ffffffff80f4d9e3: 8b 4b 48              movl    0x48(%rbx), %ecx
+ffffffff80f4d9e6: f6 c1 02              testb   $0x2, %cl
+ffffffff80f4d9e9: 0f 84 14 ff ff ff     je      0xffffffff80f4d903 <ufs_itimes_locked+0x23>
+ffffffff80f4d9ef: 48 8b 45 e0           movq    -0x20(%rbp), %rax
+ffffffff80f4d9f3: f7 c1 00 04 00 00     testl   $0x400, %ecx            # imm = 0x400
+ffffffff80f4d9f9: 75 09                 jne     0xffffffff80f4da04 <ufs_itimes_locked+0x124>
+ffffffff80f4d9fb: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4d9ff: 89 41 20             *movl    %eax, 0x20(%rcx)
+ffffffff80f4da02: eb 08                 jmp     0xffffffff80f4da0c <ufs_itimes_locked+0x12c>
+ffffffff80f4da04: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4da08: 48 89 41 30          *movq    %rax, 0x30(%rcx)
+ffffffff80f4da0c: f6 43 49 04           testb   $0x4, 0x49(%rbx)
+ffffffff80f4da10: 8b 45 e8              movl    -0x18(%rbp), %eax
+ffffffff80f4da13: 48 8b 4b 38           movq    0x38(%rbx), %rcx
+ffffffff80f4da17: 75 05                 jne     0xffffffff80f4da1e <ufs_itimes_locked+0x13e>
+ffffffff80f4da19: 89 41 24             *movl    %eax, 0x24(%rcx)
+ffffffff80f4da1c: eb 03                 jmp     0xffffffff80f4da21 <ufs_itimes_locked+0x141>
+ffffffff80f4da1e: 89 41 48             *movl    %eax, 0x48(%rcx)
+ffffffff80f4da21: f7 43 48 00 04 00 00  testl   $0x400, 0x48(%rbx)      # imm = 0x400
+ffffffff80f4da28: b8 78 00 00 00        movl    $0x78, %eax
+ffffffff80f4da2d: b9 e8 00 00 00        movl    $0xe8, %ecx
+ffffffff80f4da32: 48 0f 44 c8           cmoveq  %rax, %rcx
+ffffffff80f4da36: 48 8b 43 38           movq    0x38(%rbx), %rax
+ffffffff80f4da3a: 48 ff 04 08          *incq    (%rax,%rcx)
+ffffffff80f4da3e: e9 c0 fe ff ff        jmp     0xffffffff80f4d903 <ufs_itimes_locked+0x23>
+ffffffff80f4da43: 66 66 66 66 2e 0f 1f 84 00 00 00 00 00        nopw    %cs:(%rax,%rax)
 */
 // Disable ufs_itimes change time code
 // Record existing file's access, modification times
@@ -244,11 +236,11 @@ int main(int argc, char *argv[])
     *
     * We will NOP out the lines that write to memory.
 
-ffffffff80f38386: 89 41 20              movl    %eax, 32(%rcx)
-ffffffff80f3838f: 48 89 41 30           movq    %rax, 48(%rcx)
-ffffffff80f383a1: 89 41 24              movl    %eax, 36(%rcx)
-ffffffff80f383ba: 89 41 48              movl    %eax, 72(%rcx)
-ffffffff80f383cc: 48 83 00 01           addq    $1, (%rax)
+ffffffff80f4d9ff: 89 41 20             *movl    %eax, 0x20(%rcx)
+ffffffff80f4da08: 48 89 41 30          *movq    %rax, 0x30(%rcx)
+ffffffff80f4da19: 89 41 24             *movl    %eax, 0x24(%rcx)
+ffffffff80f4da1e: 89 41 48             *movl    %eax, 0x48(%rcx)
+ffffffff80f4da3a: 48 ff 04 08          *incq    (%rax,%rcx)
 */
 
    for (i = 0; i < SIZE - 3; i++) {
@@ -270,9 +262,9 @@ ffffffff80f383cc: 48 83 00 01           addq    $1, (%rax)
 	  ufs_itimes_code[i + 2] == 0x48)
 	 offset4 = i;
       if (ufs_itimes_code[i] == 0x48 &&
-	  ufs_itimes_code[i + 1] == 0x83 &&
-	  ufs_itimes_code[i + 2] == 0x00 &&
-	  ufs_itimes_code[i + 3] == 0x01)
+	  ufs_itimes_code[i + 1] == 0xff &&
+	  ufs_itimes_code[i + 2] == 0x04 &&
+	  ufs_itimes_code[i + 3] == 0x08)
 	 offset5 = i;
    }
 
